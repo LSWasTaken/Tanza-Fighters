@@ -9,7 +9,7 @@ import debounce from 'lodash/debounce';
 
 const GAME_DURATION = 15;
 const LEADERBOARD_CACHE_KEY = 'tanza_leaderboard';
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+const CACHE_TTL = 5 * 60 * 1000;
 
 function ErrorBoundary({ children }) {
   const [hasError, setHasError] = useState(false);
@@ -46,13 +46,11 @@ export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isFetchingLeaderboard, setIsFetchingLeaderboard] = useState(false);
 
-  // Load name from localStorage
   useEffect(() => {
     const savedName = localStorage.getItem('fighterName');
     if (savedName) setName(savedName);
   }, []);
 
-  // Save name to localStorage
   useEffect(() => {
     if (name.trim()) {
       localStorage.setItem('fighterName', name.trim());
@@ -61,7 +59,6 @@ export default function Home() {
     }
   }, [name]);
 
-  // Game timer
   useEffect(() => {
     let timer;
     if (gameActive && timeLeft > 0) {
@@ -71,14 +68,11 @@ export default function Home() {
     } else if (timeLeft === 0 && gameActive) {
       setGameActive(false);
       setShowLeaderboard(true);
-      toast('Game Over! Submit your score to the leaderboard!', {
-        icon: '🎮',
-      });
+      toast('Game Over! Submit your score to the leaderboard!', { icon: '🎮' });
     }
     return () => clearInterval(timer);
   }, [gameActive, timeLeft]);
 
-  // Fetch leaderboard with caching
   useEffect(() => {
     if (typeof window === 'undefined' || !db) return;
 
@@ -94,7 +88,6 @@ export default function Home() {
     fetchLeaderboard();
   }, []);
 
-  // Keyboard support
   useEffect(() => {
     const handleKey = (e) => {
       if (e.code === 'Space' && gameActive && timeLeft > 0) {
