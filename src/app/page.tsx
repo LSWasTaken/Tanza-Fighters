@@ -276,7 +276,7 @@ export default function Home() {
             </button>
 
             <footer className="text-center text-xs text-slate-400 mt-8 sm:mt-12 pb-6">
-                Tanza Fighters &copy; {new Date().getFullYear()} - Click Fast, Be Legendary!
+                Tanza Fighters © {new Date().getFullYear()} - Click Fast, Be Legendary!
             </footer>
         </div>
     );
