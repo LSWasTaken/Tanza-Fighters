@@ -80,23 +80,27 @@ const submitScoreToLeaderboard = async () => {
   }
 
   const trimmedName = name.trim();
+  setIsSubmitting(true); // Start submitting
 
   try {
     await addDoc(collection(db, 'leaderboard'), {
       name: trimmedName,
       score,
       timestamp: serverTimestamp(),
-      avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${trimmedName}`, // 🎨 Avatar
-      timePlayed: 15, // ⏱️ Fixed to 15 seconds for your game
+      avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${trimmedName}`,
+      timePlayed: 15,
     });
     alert('Score submitted successfully!');
     setName('');
+    fetchLeaderboard(); // Refresh leaderboard after submission
   } catch (error) {
     console.error('Error submitting score:', error);
     alert('Failed to submit score. Please try again.');
+  } finally {
+    setIsSubmitting(false); // Reset submitting state
   }
 };
-
+    
     const fetchLeaderboard = async () => {
         if (isFetchingLeaderboard) return;
         setIsFetchingLeaderboard(true);
