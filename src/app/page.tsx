@@ -73,40 +73,29 @@ export default function Home() {
         setName(e.target.value.trim());
     }
 
-    const submitScoreToLeaderboard = async () => {
-        const trimmedName = name.trim();
-        if (!trimmedName) {
-            alert('Please enter your fighter name to submit your score.');
-            return;
-        }
-        if (score === 0) {
-            alert('Get a score higher than 0 to make it to the leaderboard!');
-            return;
-        }
-        if (gameActive) {
-            alert('Finish the current game before submitting your score.');
-            return;
-        }
-        if (isSubmitting) return; // Prevent multiple submissions
+const submitScoreToLeaderboard = async () => {
+  if (!name || name.trim() === '') {
+    alert('Please enter your name before submitting your score.');
+    return;
+  }
 
-        setIsSubmitting(true);
-        try {
-            await addDoc(collection(db, 'leaderboard'), {
-                name: trimmedName,
-                score,
-                timestamp: serverTimestamp(),
-            });
-            alert('Score submitted! You\'re a legend!');
-            // setScore(0); // Reset score here if you want, or keep it for "Play Again"
-            fetchLeaderboard(); // Refresh leaderboard
-            setShowLeaderboard(true);
-        } catch (err) {
-            console.error('Error submitting score:', err);
-            alert('Failed to submit score. Please check your connection and try again.');
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
+  const trimmedName = name.trim();
+
+  try {
+    await addDoc(collection(db, 'leaderboard'), {
+      name: trimmedName,
+      score,
+      timestamp: serverTimestamp(),
+      avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${trimmedName}`, // 🎨 Avatar
+      timePlayed: 15, // ⏱️ Fixed to 15 seconds for your game
+    });
+    alert('Score submitted successfully!');
+    setName('');
+  } catch (error) {
+    console.error('Error submitting score:', error);
+    alert('Failed to submit score. Please try again.');
+  }
+};
 
     const fetchLeaderboard = async () => {
         if (isFetchingLeaderboard) return;
